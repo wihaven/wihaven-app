@@ -1,0 +1,10 @@
+dist
+build
+coverage
+node_modules
+.git
+.DS_Store
+*.log
+pnpm-lock.yaml
+package-lock.json
+yarn.lock

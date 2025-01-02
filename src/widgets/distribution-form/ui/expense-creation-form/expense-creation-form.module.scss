@@ -1,0 +1,34 @@
+.form {
+    display: grid;
+    grid-template:
+        'name percent reset'
+        'name percent submit' / 1fr 1fr auto;
+
+    align-items: end;
+    padding: 16px;
+    gap: 8px 16px;
+    border-radius: 8px;
+
+    @include mantine.dark {
+        background-color: var(--mantine-color-dark-8);
+    }
+    @include mantine.light {
+        background-color: var(--mantine-color-light-8);
+    }
+}
+
+.nameInput {
+    grid-area: name;
+}
+
+.percentInput {
+    grid-area: percent;
+}
+
+.reset {
+    grid-area: reset;
+}
+
+.submit {
+    grid-area: submit;
+}
