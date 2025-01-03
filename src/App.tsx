@@ -1,4 +1,4 @@
-import { MantineProvider, createTheme } from '@mantine/core';
+import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core';
 import '@mantine/core/styles.css';
 
 import { RouterProvider } from 'atomic-router-react';
@@ -24,11 +24,14 @@ const theme = createTheme({
 
 function App() {
     return (
-        <MantineProvider theme={theme} defaultColorScheme="dark">
-            <RouterProvider router={router}>
-                <Routes />
-            </RouterProvider>
-        </MantineProvider>
+        <>
+            <ColorSchemeScript defaultColorScheme="auto" />
+            <MantineProvider theme={theme} defaultColorScheme="auto">
+                <RouterProvider router={router}>
+                    <Routes />
+                </RouterProvider>
+            </MantineProvider>
+        </>
     );
 }
 
