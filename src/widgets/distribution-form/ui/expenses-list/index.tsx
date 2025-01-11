@@ -23,7 +23,7 @@ export const ExpensesList = () => {
                         <IconTrash />
                     </ActionIcon>
                 </Tooltip>
-                <Text className={styles.percent}>{expense.percent}&nbsp;%</Text>
+                <Text className={styles.percent}>{expense.percent}%</Text>
                 {expense.sum !== undefined && <Text className={styles.sum}>{formatAsRubles(expense.sum)}</Text>}
             </Paper>
         ),
