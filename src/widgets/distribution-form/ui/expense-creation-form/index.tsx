@@ -31,13 +31,11 @@ export const ExpenseCreationForm = () => {
         }
     };
 
-    const onSubmit: FormEventHandler = (e) => {
-        e.preventDefault();
+    const onSubmit: FormEventHandler = () => {
         distributionModel.expenseDraftSubmitted();
     };
 
-    const onReset: FormEventHandler = (e) => {
-        e.preventDefault();
+    const onReset: FormEventHandler = () => {
         distributionModel.expenseCreationReset();
     };
 
