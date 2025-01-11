@@ -52,8 +52,7 @@ export const ExpenseCreationForm = () => {
             />
             <NumberInput
                 suffix="%"
-                allowNegative={false}
-                clampBehavior="strict"
+                allowDecimal
                 min={0.01}
                 max={100}
                 label={percentInputLabel}
