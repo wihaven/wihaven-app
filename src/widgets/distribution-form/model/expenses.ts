@@ -3,7 +3,7 @@ import { persist } from 'effector-storage/local';
 import { nanoid } from 'nanoid';
 import { readonly } from 'patronum';
 
-import { RA, pipe } from '~/shared/lib/fp-ts';
+import { RA, flow, pipe } from '~/shared/lib/fp-ts';
 
 import { Expense, ValidatedExpenseDraft } from '../lib';
 
@@ -12,6 +12,12 @@ export const createExpensesModel = () => {
     const remove = createEvent<Expense['id']>();
 
     const $expenses = createStore<readonly Expense[]>([]);
+    const $notDistributedPercent = $expenses.map(
+        flow(
+            RA.reduce(0, (acc, expense) => acc + expense.percent),
+            (distributedPercent) => 100 - distributedPercent,
+        ),
+    );
 
     sample({
         clock: push,
@@ -37,5 +43,6 @@ export const createExpensesModel = () => {
         push,
         remove,
         $expenses: readonly($expenses),
+        $notDistributedPercent,
     };
 };

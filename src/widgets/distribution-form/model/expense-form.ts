@@ -5,24 +5,23 @@ import { ZodError } from 'zod';
 import { createDisclosure } from '~/shared/lib/factories';
 import { O, RA, pipe } from '~/shared/lib/fp-ts';
 
-import { Expense, ExpenseDraft, ExpenseDraftContract } from '../lib';
+import { ExpenseDraft, ExpenseDraftContract } from '../lib';
 
 export type CreateExpenseFormParams = {
-    $expenses: Store<readonly Expense[]>;
+    $notDistributedPercent: Store<number>;
 };
 
-export const createExpenseCreationModel = ({ $expenses }: CreateExpenseFormParams) => {
+export const createExpenseCreationModel = ({ $notDistributedPercent }: CreateExpenseFormParams) => {
     const validateExpenseFx = attach({
-        source: $expenses,
-        effect: async (expenses, draft: FormValues<UserFormSchema<ExpenseDraft>>): Promise<ErrorsSchemaPayload | null> => {
+        source: $notDistributedPercent,
+        effect: async (notDistributedPercent, draft: FormValues<UserFormSchema<ExpenseDraft>>): Promise<ErrorsSchemaPayload | null> => {
             try {
                 const result = await ExpenseDraftContract.parseAsync(draft);
 
                 return pipe(
-                    expenses,
-                    RA.reduce(0, (acc, expense) => acc + expense.percent),
-                    (percent) => percent + result.percent,
-                    O.fromPredicate((percent) => percent <= 100),
+                    notDistributedPercent,
+                    (percent) => percent - result.percent,
+                    O.fromPredicate((percent) => percent >= 0),
                     O.fold(
                         () => ({ percent: 'Сумма всех процентов не может превышать 100%' }),
                         () => null,

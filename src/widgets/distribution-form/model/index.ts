@@ -8,9 +8,9 @@ import { createExpensesModel } from './expenses';
 import { createIncomeForm } from './income-form';
 
 const createDistributionModel = () => {
-    const { $expenses, push, remove } = createExpensesModel();
+    const { $expenses, $notDistributedPercent, push, remove } = createExpensesModel();
     const incomeForm = createIncomeForm();
-    const { expenseForm, expenseCreation } = createExpenseCreationModel({ $expenses });
+    const { expenseForm, expenseCreation } = createExpenseCreationModel({ $notDistributedPercent });
 
     sample({
         clock: expenseForm.validatedAndSubmitted,
@@ -53,6 +53,8 @@ const createDistributionModel = () => {
         expenseNameField: expenseForm.fields.name,
         expensePercentField: expenseForm.fields.percent,
         expenseCreation,
+
+        $notDistributedPercent,
     };
 };
 

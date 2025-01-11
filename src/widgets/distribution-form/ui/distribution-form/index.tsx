@@ -1,4 +1,4 @@
-import { Button, Fieldset, Stack } from '@mantine/core';
+import { Button, Fieldset, Stack, Text } from '@mantine/core';
 
 import { IconPlus } from '@tabler/icons-react';
 import { useUnit } from 'effector-react';
@@ -10,18 +10,34 @@ import { IncomeInput } from '../income-input';
 import styles from './distribution-form.module.scss';
 
 const expensesFieldsetLegend = 'Статьи расходов';
+const notDistributedPercentLabel = 'Нераспределено:\xa0';
+
 const addMoreButtonLabel = 'Добавить';
 
 export const DistributionForm = () => {
-    const { expenseCreationActive, expenseCreationToggled } = useUnit({
+    const { expenseCreationActive, notDistributedPercent, expenseCreationToggled } = useUnit({
         expenseCreationActive: distributionModel.expenseCreation.$active,
+        notDistributedPercent: distributionModel.$notDistributedPercent,
+
         expenseCreationToggled: distributionModel.expenseCreation.toggle,
     });
 
     return (
         <Stack>
             <IncomeInput />
-            <Fieldset component={Stack} legend={expensesFieldsetLegend} classNames={{ legend: styles.legend }}>
+            <Fieldset
+                component={Stack}
+                legend={
+                    <>
+                        {expensesFieldsetLegend}
+                        <Text>
+                            {notDistributedPercentLabel}
+                            {notDistributedPercent}%
+                        </Text>
+                    </>
+                }
+                classNames={{ legend: styles.legend }}
+            >
                 <ExpensesList />
                 {expenseCreationActive ? (
                     <ExpenseCreationForm />

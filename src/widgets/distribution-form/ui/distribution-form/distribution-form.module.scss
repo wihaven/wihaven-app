@@ -1,3 +1,6 @@
 .legend {
     font-size: mantine.rem(24);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
 }
