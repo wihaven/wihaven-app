@@ -34,6 +34,7 @@ export const DistributionForm = () => {
 
     const distributionLabel = foldNotDistributedPercentToLabel(notDistributedPercent);
     const distributionHasOverflow = notDistributedPercent < 0;
+    const distributionIsCompleted = notDistributedPercent === 0;
 
     return (
         <Stack>
@@ -43,7 +44,9 @@ export const DistributionForm = () => {
                 legend={
                     <>
                         {expensesFieldsetLegend}
-                        <Text className={clsx(distributionHasOverflow && styles.overflow)}>{distributionLabel}</Text>
+                        <Text className={clsx(distributionHasOverflow && styles.overflow, distributionIsCompleted && styles.completed)}>
+                            {distributionLabel}
+                        </Text>
                     </>
                 }
                 classNames={{ legend: styles.legend }}
