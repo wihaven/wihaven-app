@@ -2,16 +2,15 @@ import { ErrorsSchemaPayload, FormValues, UserFormSchema, createForm } from '@ef
 import { Store, attach } from 'effector';
 import { ZodError } from 'zod';
 
-import { createDisclosure } from '~/shared/lib/factories';
 import { O, RA, pipe } from '~/shared/lib/fp-ts';
 
-import { ExpenseDraft, ExpenseDraftContract } from '../lib';
+import { ExpenseDraft, ExpenseDraftContract, ValidatedExpenseDraft } from '../lib';
 
 export type CreateExpenseFormParams = {
     $notDistributedPercent: Store<number>;
 };
 
-export const createExpenseCreationModel = ({ $notDistributedPercent }: CreateExpenseFormParams) => {
+export const createExpenseForm = ({ $notDistributedPercent }: CreateExpenseFormParams) => {
     const validateExpenseFx = attach({
         source: $notDistributedPercent,
         effect: async (notDistributedPercent, draft: FormValues<UserFormSchema<ExpenseDraft>>): Promise<ErrorsSchemaPayload | null> => {
@@ -51,8 +50,6 @@ export const createExpenseCreationModel = ({ $notDistributedPercent }: CreateExp
         },
     });
 
-    const expenseCreation = createDisclosure(false);
-
     const expenseForm = createForm<ExpenseDraft>({
         schema: {
             name: '',
@@ -63,7 +60,13 @@ export const createExpenseCreationModel = ({ $notDistributedPercent }: CreateExp
     });
 
     return {
-        expenseForm,
-        expenseCreation,
+        name: expenseForm.fields.name,
+        percent: expenseForm.fields.percent,
+        submit: expenseForm.submit,
+        reset: expenseForm.reset,
+        validatedAndSubmitted: expenseForm.validatedAndSubmitted.map((draft) => draft as ValidatedExpenseDraft),
     };
 };
+
+export type ExpenseFormModel = ReturnType<typeof createExpenseForm>;
+export type ExpenseFormViewModel = Omit<ExpenseFormModel, 'validatedAndSubmitted'>;

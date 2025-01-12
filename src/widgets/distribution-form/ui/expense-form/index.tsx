@@ -1,23 +1,32 @@
-import { ChangeEventHandler, FormEventHandler } from 'react';
+import { ChangeEventHandler } from 'react';
 
 import { ActionIcon, NumberInput, Paper, TextInput, Tooltip } from '@mantine/core';
 
 import { useField } from '@effector-reform/react';
 import { IconDeviceFloppy, IconX } from '@tabler/icons-react';
+import { useUnit } from 'effector-react';
 
 import { Form } from '~/shared/ui/form';
 
-import { distributionModel } from '../../model';
-import styles from './expense-creation-form.module.scss';
+import { ExpenseFormViewModel } from '../../model/expense-form';
+import styles from './expense-form.module.scss';
 
 const nameInputLabel = 'Название';
 const percentInputLabel = 'Процент';
 const resetButtonLabel = 'Отменить создание статьи расходов';
 const submitButtonLabel = 'Создать статью расходов';
 
-export const ExpenseCreationForm = () => {
-    const expenseNameField = useField(distributionModel.expenseNameField);
-    const expensePercentField = useField(distributionModel.expensePercentField);
+export type ExpenseFormProps = {
+    form: ExpenseFormViewModel;
+};
+
+export const ExpenseForm = ({ form }: ExpenseFormProps) => {
+    const expenseNameField = useField(form.name);
+    const expensePercentField = useField(form.percent);
+    const { onSubmit, onReset } = useUnit({
+        onSubmit: form.submit,
+        onReset: form.reset,
+    });
 
     const onExpenseNameInputChanged: ChangeEventHandler<HTMLInputElement> = (event) => {
         expenseNameField.onChange(event.target.value);
@@ -29,14 +38,6 @@ export const ExpenseCreationForm = () => {
         } else {
             expensePercentField.onChange(floatValue);
         }
-    };
-
-    const onSubmit: FormEventHandler = () => {
-        distributionModel.expenseDraftSubmitted();
-    };
-
-    const onReset: FormEventHandler = () => {
-        distributionModel.expenseCreationReset();
     };
 
     return (

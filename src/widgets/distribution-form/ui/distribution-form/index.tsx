@@ -1,16 +1,26 @@
 import { Button, Fieldset, Stack, Text } from '@mantine/core';
 
 import { IconPlus } from '@tabler/icons-react';
+import clsx from 'clsx';
 import { useUnit } from 'effector-react';
 
 import { distributionModel } from '../../model';
-import { ExpenseCreationForm } from '../expense-creation-form';
+import { ExpenseForm } from '../expense-form';
 import { ExpensesList } from '../expenses-list';
 import { IncomeInput } from '../income-input';
 import styles from './distribution-form.module.scss';
 
 const expensesFieldsetLegend = 'Статьи расходов';
 const notDistributedPercentLabel = 'Нераспределено:\xa0';
+const allPercentsDistributedLabel = 'Все проценты распределены';
+const percentsDistributionOverflowed = 'Вы пытаетесь распределить лишние\xa0';
+
+const foldNotDistributedPercentToLabel = (notDistributedPercent: number) => {
+    if (notDistributedPercent === 0) return allPercentsDistributedLabel;
+    if (notDistributedPercent > 0) return `${notDistributedPercentLabel}${notDistributedPercent}%`;
+
+    return `${percentsDistributionOverflowed}${-1 * notDistributedPercent}%`;
+};
 
 const addMoreButtonLabel = 'Добавить';
 
@@ -22,6 +32,9 @@ export const DistributionForm = () => {
         expenseCreationToggled: distributionModel.expenseCreation.toggle,
     });
 
+    const distributionLabel = foldNotDistributedPercentToLabel(notDistributedPercent);
+    const distributionHasOverflow = notDistributedPercent < 0;
+
     return (
         <Stack>
             <IncomeInput />
@@ -30,17 +43,14 @@ export const DistributionForm = () => {
                 legend={
                     <>
                         {expensesFieldsetLegend}
-                        <Text>
-                            {notDistributedPercentLabel}
-                            {notDistributedPercent}%
-                        </Text>
+                        <Text className={clsx(distributionHasOverflow && styles.overflow)}>{distributionLabel}</Text>
                     </>
                 }
                 classNames={{ legend: styles.legend }}
             >
                 <ExpensesList />
                 {expenseCreationActive ? (
-                    <ExpenseCreationForm />
+                    <ExpenseForm form={distributionModel.expenseCreationForm} />
                 ) : (
                     <Button leftSection={<IconPlus />} variant="transparent" onClick={expenseCreationToggled}>
                         {addMoreButtonLabel}

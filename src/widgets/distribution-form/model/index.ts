@@ -1,26 +1,47 @@
 import { combine, sample } from 'effector';
 
+import { createDisclosure } from '~/shared/lib/factories';
 import { N, O, RA, pipe } from '~/shared/lib/fp-ts';
 
-import { CalculatedExpense, ValidatedExpenseDraft } from '../lib';
-import { createExpenseCreationModel } from './expense-form';
+import { CalculatedExpense, foldNumberInputValueToNumber } from '../lib';
+import { createExpenseEditModel } from './edit-expense';
+import { createExpenseForm } from './expense-form';
 import { createExpensesModel } from './expenses';
 import { createIncomeForm } from './income-form';
 
 const createDistributionModel = () => {
-    const { $expenses, $notDistributedPercent, push, remove } = createExpensesModel();
     const incomeForm = createIncomeForm();
-    const { expenseForm, expenseCreation } = createExpenseCreationModel({ $notDistributedPercent });
+    const { $expenses, $notDistributedPercent, push, remove, update } = createExpensesModel();
+    const expenseCreationForm = createExpenseForm({ $notDistributedPercent });
+
+    const { $currentEditedExpense, expenseEditStarted, expenseEditForm } = createExpenseEditModel({ $notDistributedPercent });
+
+    const expenseCreation = createDisclosure(false);
+
+    const $notDistributed = combine(
+        {
+            notDistributedPercent: $notDistributedPercent,
+            currentEditedExpense: $currentEditedExpense,
+            expenseEditFormValue: expenseEditForm.percent.$value.map(foldNumberInputValueToNumber),
+            expenseCreationFormValue: expenseCreationForm.percent.$value.map(foldNumberInputValueToNumber),
+        },
+        ({ notDistributedPercent, currentEditedExpense, expenseEditFormValue, expenseCreationFormValue }) => {
+            if (currentEditedExpense !== null) {
+                return notDistributedPercent + currentEditedExpense.percent - expenseCreationFormValue - expenseEditFormValue;
+            }
+
+            return notDistributedPercent - expenseCreationFormValue;
+        },
+    );
 
     sample({
-        clock: expenseForm.validatedAndSubmitted,
-        fn: (draft) => draft as ValidatedExpenseDraft,
-        target: push,
+        clock: expenseCreationForm.validatedAndSubmitted,
+        target: [push, expenseCreationForm.reset],
     });
 
     sample({
-        clock: expenseForm.validatedAndSubmitted,
-        target: expenseForm.reset,
+        clock: expenseEditForm.validatedAndSubmitted,
+        target: [update, expenseEditForm.reset],
     });
 
     const $calculatedExpenses = combine(incomeForm.fields.income.$value, $expenses, (income, expenses) =>
@@ -38,7 +59,7 @@ const createDistributionModel = () => {
     );
 
     sample({
-        clock: expenseForm.reset,
+        clock: expenseCreationForm.reset,
         target: expenseCreation.deactivate,
     });
 
@@ -48,13 +69,14 @@ const createDistributionModel = () => {
 
         $expenses: $calculatedExpenses,
         expenseRemoved: remove,
-        expenseDraftSubmitted: expenseForm.submit,
-        expenseCreationReset: expenseForm.reset,
-        expenseNameField: expenseForm.fields.name,
-        expensePercentField: expenseForm.fields.percent,
         expenseCreation,
+        expenseCreationForm,
 
-        $notDistributedPercent,
+        $currentEditedExpense,
+        expenseEditStarted,
+        expenseEditForm,
+
+        $notDistributedPercent: $notDistributed,
     };
 };
 

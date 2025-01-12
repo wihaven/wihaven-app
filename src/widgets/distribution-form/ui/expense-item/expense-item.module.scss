@@ -1,6 +1,6 @@
 .root {
     display: grid;
-    grid-template: 'title delete' 'percent sum' / 1fr 1fr;
+    grid-template: 'title . edit' 'percent sum delete' / 1fr 1fr auto;
     padding: 8px;
     gap: 16px;
     border-radius: 8px;
@@ -28,5 +28,8 @@
 
 .delete {
     grid-area: delete;
-    justify-self: end;
+}
+
+.edit {
+    grid-area: edit;
 }

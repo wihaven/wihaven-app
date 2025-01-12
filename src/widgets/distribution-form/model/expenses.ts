@@ -10,6 +10,7 @@ import { Expense, ValidatedExpenseDraft } from '../lib';
 export const createExpensesModel = () => {
     const push = createEvent<ValidatedExpenseDraft>();
     const remove = createEvent<Expense['id']>();
+    const update = createEvent<Expense>();
 
     const $expenses = createStore<readonly Expense[]>([]);
     const $notDistributedPercent = $expenses.map(
@@ -37,11 +38,23 @@ export const createExpensesModel = () => {
         target: $expenses,
     });
 
+    sample({
+        clock: update,
+        source: $expenses,
+        fn: (expenses, updatedExpense) =>
+            pipe(
+                expenses,
+                RA.map((expense) => (expense.id === updatedExpense.id ? updatedExpense : expense)),
+            ),
+        target: $expenses,
+    });
+
     persist({ store: $expenses, key: 'expenses' });
 
     return {
         push,
         remove,
+        update,
         $expenses: readonly($expenses),
         $notDistributedPercent,
     };

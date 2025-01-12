@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { O, flow } from '~/shared/lib/fp-ts';
+
 export type ExpenseDraft = {
     name: string;
     percent: number | '';
@@ -19,3 +21,8 @@ export type Expense = ValidatedExpenseDraft & {
 export type CalculatedExpense = Expense & {
     sum?: number;
 };
+
+export const foldNumberInputValueToNumber: (value: '' | number) => number = flow(
+    O.fromPredicate((value): value is number => value !== ''),
+    O.getOrElse(() => 0),
+);
