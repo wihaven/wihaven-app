@@ -48,6 +48,7 @@ export const ExpenseForm = ({ form }: ExpenseFormProps) => {
                 value={expenseNameField.value}
                 onChange={onExpenseNameInputChanged}
                 error={expenseNameField.error}
+                autoFocus
             />
             <NumberInput
                 suffix="%"

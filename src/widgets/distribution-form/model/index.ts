@@ -11,7 +11,18 @@ import { createIncomeForm } from './income-form';
 
 const createDistributionModel = () => {
     const incomeForm = createIncomeForm();
-    const { $expenses, $notDistributedPercent, push, remove, update } = createExpensesModel();
+    const {
+        $expenses,
+        $notDistributedPercent,
+        $isRemoveInProgress,
+        $removingExpense,
+        push,
+        removeStarted,
+        removeConfirmed,
+        removeEndedTransitionStarted,
+        removeEnded,
+        update,
+    } = createExpensesModel();
     const expenseCreationForm = createExpenseForm({ $notDistributedPercent });
 
     const { $currentEditedExpense, expenseEditStarted, expenseEditForm } = createExpenseEditModel({ $notDistributedPercent });
@@ -68,7 +79,13 @@ const createDistributionModel = () => {
         incomeField: incomeForm.fields.income,
 
         $expenses: $calculatedExpenses,
-        expenseRemoved: remove,
+        $isRemoveInProgress,
+        $removingExpense,
+        expenseRemoveStarted: removeStarted,
+        expenseRemoveConfirmed: removeConfirmed,
+        expenseRemoveEndedTransitionStarted: removeEndedTransitionStarted,
+        expenseRemoveEnded: removeEnded,
+
         expenseCreation,
         expenseCreationForm,
 

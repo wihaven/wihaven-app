@@ -8,6 +8,7 @@ import { distributionModel } from '../../model';
 import { ExpenseForm } from '../expense-form';
 import { ExpensesList } from '../expenses-list';
 import { IncomeInput } from '../income-input';
+import { RemoveConfirmation } from '../remove-confirmation';
 import styles from './distribution-form.module.scss';
 
 const expensesFieldsetLegend = 'Статьи расходов';
@@ -60,6 +61,7 @@ export const DistributionForm = () => {
                     </Button>
                 )}
             </Fieldset>
+            <RemoveConfirmation />
         </Stack>
     );
 };

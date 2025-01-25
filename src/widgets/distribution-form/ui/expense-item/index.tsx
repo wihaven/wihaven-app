@@ -18,7 +18,7 @@ interface ExpenseItemProps {
 
 export const ExpenseItem = ({ expense }: ExpenseItemProps) => {
     const { onExpenseRemove, onExpenseEdit } = useUnit({
-        onExpenseRemove: distributionModel.expenseRemoved,
+        onExpenseRemove: distributionModel.expenseRemoveStarted,
         onExpenseEdit: distributionModel.expenseEditStarted,
     });
 
@@ -33,7 +33,7 @@ export const ExpenseItem = ({ expense }: ExpenseItemProps) => {
                 </ActionIcon>
             </Tooltip>
             <Tooltip label={deleteButtonLabel}>
-                <ActionIcon color="red" className={styles.delete} onClick={() => onExpenseRemove(expense.id)}>
+                <ActionIcon color="red" className={styles.delete} onClick={() => onExpenseRemove(expense)}>
                     <IconTrash />
                 </ActionIcon>
             </Tooltip>
