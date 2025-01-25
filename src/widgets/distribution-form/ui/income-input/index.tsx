@@ -17,5 +17,15 @@ export const IncomeInput = () => {
         }
     };
 
-    return <NumberInput label={incomeInputLabel} value={incomeField.value} onValueChange={onSumInputChanged} suffix="₽" />;
+    return (
+        <NumberInput
+            label={incomeInputLabel}
+            allowDecimal
+            decimalScale={2}
+            decimalSeparator=","
+            value={incomeField.value}
+            onValueChange={onSumInputChanged}
+            suffix="₽"
+        />
+    );
 };
