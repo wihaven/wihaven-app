@@ -14,7 +14,7 @@ export const AppLayout = (props: AppLayoutProps) => {
         <AppShell header={{ height: 60 }}>
             <AppShell.Header component={Group} className={styles.header}>
                 <Text variant="gradient" size="xl" gradient={{ from: 'teal', to: 'violet', deg: 90 }}>
-                    nestwise
+                    wihaven
                 </Text>
                 <Title order={1} size="h2">
                     {title}
