@@ -1,9 +1,8 @@
+import { Array as A, flow, pipe } from 'effect';
 import { createEvent, createStore, sample } from 'effector';
 import { persist } from 'effector-storage/local';
 import { nanoid } from 'nanoid';
 import { readonly } from 'patronum';
-
-import { RA, constFalse, constNull, constTrue, flow, pipe } from '~/shared/lib/fp-ts';
 
 import { Expense, ValidatedExpenseDraft } from '../lib';
 
@@ -26,7 +25,7 @@ export const createExpensesModel = () => {
 
     const $notDistributedPercent = $expenses.map(
         flow(
-            RA.reduce(0, (acc, expense) => acc + expense.percent),
+            A.reduce(0, (acc, expense) => acc + expense.percent),
             (distributedPercent) => 100 - distributedPercent,
         ),
     );
@@ -34,7 +33,7 @@ export const createExpensesModel = () => {
     sample({
         clock: push,
         source: $expenses,
-        fn: (expenses, draft) => pipe(expenses, RA.concat([{ ...draft, id: nanoid() }])),
+        fn: (expenses, draft) => pipe(expenses, A.append({ ...draft, id: nanoid() })),
         target: $expenses,
     });
 
@@ -45,20 +44,19 @@ export const createExpensesModel = () => {
 
     sample({
         clock: removeStarted,
-        fn: constTrue,
+        fn: () => true,
         target: $isRemoveInProgress,
     });
 
     sample({
         clock: removeEndedTransitionStarted,
-        fn: constFalse,
+        fn: () => false,
         target: $isRemoveInProgress,
     });
 
     sample({
         clock: removeEnded,
-        fn: constNull,
-        target: $removingExpense,
+        target: $removingExpense.reinit,
     });
 
     sample({
@@ -74,7 +72,7 @@ export const createExpensesModel = () => {
         fn: (expenses, id) =>
             pipe(
                 expenses,
-                RA.filter((expense) => expense.id !== id),
+                A.filter((expense) => expense.id !== id),
             ),
         target: $expenses,
     });
@@ -85,7 +83,7 @@ export const createExpensesModel = () => {
         fn: (expenses, updatedExpense) =>
             pipe(
                 expenses,
-                RA.map((expense) => (expense.id === updatedExpense.id ? updatedExpense : expense)),
+                A.map((expense) => (expense.id === updatedExpense.id ? updatedExpense : expense)),
             ),
         target: $expenses,
     });

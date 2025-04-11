@@ -1,7 +1,10 @@
+import { pipe } from 'effect';
+import * as A from 'effect/Array';
+import * as N from 'effect/Number';
+import * as O from 'effect/Option';
 import { combine, sample } from 'effector';
 
 import { createDisclosure } from '~/shared/lib/factories';
-import { N, O, RA, pipe } from '~/shared/lib/fp-ts';
 
 import { CalculatedExpense, foldNumberInputValueToNumber } from '../lib';
 import { createExpenseEditModel } from './edit-expense';
@@ -58,11 +61,11 @@ const createDistributionModel = () => {
     const $calculatedExpenses = combine(incomeForm.fields.income.$value, $expenses, (income, expenses) =>
         pipe(
             income,
-            O.fromPredicate(N.isNumber),
+            O.liftPredicate(N.isNumber),
             O.map((income) =>
                 pipe(
                     expenses,
-                    RA.map((expense): CalculatedExpense => ({ ...expense, sum: (income * expense.percent) / 100 })),
+                    A.map((expense): CalculatedExpense => ({ ...expense, sum: (income * expense.percent) / 100 })),
                 ),
             ),
             O.getOrElse((): readonly CalculatedExpense[] => expenses),

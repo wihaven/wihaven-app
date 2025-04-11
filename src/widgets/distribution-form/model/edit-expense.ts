@@ -1,8 +1,7 @@
+import { pipe } from 'effect';
+import * as O from 'effect/Option';
 import { Store, combine, createEvent, createStore, sample } from 'effector';
-import { pipe } from 'fp-ts/lib/function';
 import { readonly, spread } from 'patronum';
-
-import { O } from '~/shared/lib/fp-ts';
 
 import { Expense } from '../lib';
 import { createExpenseForm } from './expense-form';
@@ -30,7 +29,7 @@ export const createExpenseEditModel = ({ $notDistributedPercent }: CreateExpense
                     expense,
                     O.fromNullable,
                     O.map((nonEmptyExpense) => ({ ...validatedExpenseDraft, id: nonEmptyExpense.id })),
-                    O.toNullable,
+                    O.getOrNull,
                 ),
         }),
         filter: Boolean,

@@ -1,6 +1,5 @@
+import { Option as O, flow } from 'effect';
 import { z } from 'zod';
-
-import { O, flow } from '~/shared/lib/fp-ts';
 
 export type ExpenseDraft = {
     name: string;
@@ -23,6 +22,6 @@ export type CalculatedExpense = Expense & {
 };
 
 export const foldNumberInputValueToNumber: (value: '' | number) => number = flow(
-    O.fromPredicate((value): value is number => value !== ''),
+    O.liftPredicate((value): value is number => value !== ''),
     O.getOrElse(() => 0),
 );

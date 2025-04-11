@@ -1,8 +1,9 @@
 import { ErrorsSchemaPayload, FormValues, UserFormSchema, createForm } from '@effector-reform/core';
+import { pipe } from 'effect';
+import * as A from 'effect/Array';
+import * as O from 'effect/Option';
 import { Store, attach } from 'effector';
 import { ZodError } from 'zod';
-
-import { O, RA, pipe } from '~/shared/lib/fp-ts';
 
 import { ExpenseDraft, ExpenseDraftContract, ValidatedExpenseDraft } from '../lib';
 
@@ -20,20 +21,20 @@ export const createExpenseForm = ({ $notDistributedPercent }: CreateExpenseFormP
                 return pipe(
                     notDistributedPercent,
                     (percent) => percent - result.percent,
-                    O.fromPredicate((percent) => percent >= 0),
-                    O.fold(
-                        () => ({ percent: 'Сумма всех процентов не может превышать 100%' }),
-                        () => null,
-                    ),
+                    O.liftPredicate((percent) => percent >= 0),
+                    O.match({
+                        onNone: () => ({ percent: 'Сумма всех процентов не может превышать 100%' }),
+                        onSome: () => null,
+                    }),
                 );
             } catch (e) {
                 return pipe(
                     e,
-                    O.fromPredicate((e) => e instanceof ZodError),
+                    O.liftPredicate((e) => e instanceof ZodError),
                     O.map(({ errors }) =>
                         pipe(
                             errors,
-                            RA.reduce({}, (acc: ErrorsSchemaPayload, error) => {
+                            A.reduce({}, (acc: ErrorsSchemaPayload, error) => {
                                 if (acc[error.path.join('.')]) {
                                     return acc;
                                 }
@@ -44,7 +45,7 @@ export const createExpenseForm = ({ $notDistributedPercent }: CreateExpenseFormP
                             }),
                         ),
                     ),
-                    O.toNullable,
+                    O.getOrNull,
                 );
             }
         },
