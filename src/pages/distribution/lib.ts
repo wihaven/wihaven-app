@@ -1,6 +1,8 @@
 import { Option as O, flow, pipe } from 'effect';
 import { z } from 'zod';
 
+import { decode, encode } from '~/shared/lib/base64';
+
 export type ExpenseDraft = {
     name: string;
     percent: number | '';
@@ -29,11 +31,11 @@ export const foldNumberInputValueToNumber: (value: '' | number) => number = flow
     O.getOrElse(() => 0),
 );
 
-export const serializeExpenses = (expenses: readonly Expense[]): string => pipe(expenses, JSON.stringify);
+export const serializeExpenses = (expenses: readonly Expense[]): string => pipe(expenses, JSON.stringify, encode);
 
 export const deserializeExpenses = (raw: string): readonly Expense[] => {
     try {
-        return pipe(raw, JSON.parse, ExpensesContract.parse);
+        return pipe(raw, decode, JSON.parse, ExpensesContract.parse);
     } catch {
         return [];
     }
