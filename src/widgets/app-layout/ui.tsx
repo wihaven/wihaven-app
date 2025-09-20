@@ -20,9 +20,7 @@ export const AppLayout = (props: AppLayoutProps) => {
                     {title}
                 </Title>
             </AppShell.Header>
-            <AppShell.Main component={Container} className={styles.main}>
-                {children}
-            </AppShell.Main>
+            <AppShell.Main component={Container}>{children}</AppShell.Main>
         </AppShell>
     );
 };
