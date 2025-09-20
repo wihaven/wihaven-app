@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint:eslint": "eslint .",
+    "lint:tsc": "tsc --noEmit",
+    "lint:prettier" :"prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss}\"",
     "preview": "vite preview",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss}\""
   },
   "dependencies": {
     "@mantine/core": "^7.15.1",
@@ -50,5 +51,6 @@
     "typescript-eslint": "^8.18.1",
     "vite": "^6.0.3",
     "zod": "^3.24.1"
-  }
+  },
+  "packageManager": "pnpm@10.17.0" 
 }
