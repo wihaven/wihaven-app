@@ -5,6 +5,7 @@ import * as O from 'effect/Option';
 import { combine, sample } from 'effector';
 
 import { createDisclosure } from '~/shared/lib/factories';
+import { distributionRoute } from '~/shared/routing';
 
 import { CalculatedExpense, foldNumberInputValueToNumber } from '../lib';
 import { createExpenseEditModel } from './edit-expense';
@@ -101,3 +102,4 @@ const createDistributionModel = () => {
 };
 
 export const distributionModel = createDistributionModel();
+export const route = distributionRoute;
