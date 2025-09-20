@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import { Button, Modal, Text } from '@mantine/core';
 
 import { useUnit } from 'effector-react';
@@ -27,12 +29,12 @@ export const DistributionReplaceConfirmation = () => {
         <Modal opened={opened} onClose={onClose} title={title} classNames={{ body: styles.body }}>
             <dl className={styles.expenses}>
                 {expensesCandidate.map((expense) => (
-                    <>
+                    <Fragment key={expense.id}>
                         <Text component="dt">{expense.name}:</Text>
                         <Text component="dd" className={styles.expensePercent}>
                             {expense.percent}%
                         </Text>
-                    </>
+                    </Fragment>
                 ))}
             </dl>
             <section className={styles.buttons}>

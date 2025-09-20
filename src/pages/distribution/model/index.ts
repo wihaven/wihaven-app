@@ -8,6 +8,7 @@ import { createDisclosure } from '~/shared/lib/factories';
 import { distributionRoute, sharedDistributionRoute } from '~/shared/routing';
 
 import { CalculatedExpense, foldNumberInputValueToNumber } from '../lib';
+import { createDistributionReplaceModel } from './distribution-replace';
 import { createDistributionReplaceConfirmationModel } from './distribution-replace-confirmation';
 import { createExpenseEditModel } from './edit-expense';
 import { createExpenseForm } from './expense-form';
@@ -80,6 +81,8 @@ const createDistributionModel = () => {
         target: expenseCreation.deactivate,
     });
 
+    const distributionReplace = createDistributionReplaceModel();
+
     const distributionReplaceConfirmation = createDistributionReplaceConfirmationModel();
     sample({
         clock: sharedDistributionRoute.opened,
@@ -119,6 +122,7 @@ const createDistributionModel = () => {
 
         $notDistributedPercent: $notDistributed,
 
+        distributionReplace,
         distributionReplaceConfirmation,
     };
 };

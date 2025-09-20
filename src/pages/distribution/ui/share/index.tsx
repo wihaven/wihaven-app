@@ -8,15 +8,14 @@ import { serializeExpenses } from '../../lib';
 import { distributionModel } from '../../model';
 
 const successNotificationTitle = 'Отлично!';
-const successNotificationMessage = 'Ссылка на распределение скопирована';
+const successNotificationMessage = 'Код распределения скопирован';
 
 export const Share = () => {
     const clipboard = useClipboard({ timeout: 1000 });
     const expenses = useUnit(distributionModel.$expenses);
 
     const onShare = () => {
-        const url = window.location.href + serializeExpenses(expenses);
-        clipboard.copy(url);
+        clipboard.copy(serializeExpenses(expenses));
     };
 
     return (

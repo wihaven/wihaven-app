@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { useUnit } from 'effector-react';
 
 import { distributionModel } from '../../model';
+import { DistributionReplace } from '../distribution-replace';
 import { ExpenseForm } from '../expense-form';
 import { ExpensesList } from '../expenses-list';
 import { IncomeInput } from '../income-input';
@@ -42,6 +43,7 @@ export const DistributionForm = () => {
         <Stack className={styles.root}>
             <header className={styles.header}>
                 <IncomeInput className={styles.incomeInput} />
+                <DistributionReplace />
                 <Share />
             </header>
             <Fieldset
