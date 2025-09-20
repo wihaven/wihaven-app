@@ -6,7 +6,11 @@ import { distributionModel } from '../../model';
 
 const incomeInputLabel = 'Сумма прихода';
 
-export const IncomeInput = () => {
+export type IncomeInputProps = {
+    className?: string;
+};
+
+export const IncomeInput = ({ className }: IncomeInputProps) => {
     const incomeField = useField(distributionModel.incomeField);
 
     const onSumInputChanged = ({ floatValue }: { floatValue: number | undefined }) => {
@@ -19,6 +23,7 @@ export const IncomeInput = () => {
 
     return (
         <NumberInput
+            className={className}
             label={incomeInputLabel}
             allowDecimal
             decimalScale={2}
