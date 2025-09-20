@@ -29,11 +29,11 @@ export const foldNumberInputValueToNumber: (value: '' | number) => number = flow
     O.getOrElse(() => 0),
 );
 
-export const serializeExpenses = (expenses: readonly Expense[]): string => pipe(expenses, JSON.stringify, btoa);
+export const serializeExpenses = (expenses: readonly Expense[]): string => pipe(expenses, JSON.stringify);
 
 export const deserializeExpenses = (raw: string): readonly Expense[] => {
     try {
-        return pipe(raw, atob, JSON.parse, ExpensesContract.parse);
+        return pipe(raw, JSON.parse, ExpensesContract.parse);
     } catch {
         return [];
     }
