@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint:eslint": "eslint .",
     "lint:tsc": "tsc --noEmit",
-    "lint:prettier" :"prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss}\"",
+    "lint:prettier": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss}\"",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss}\""
   },
@@ -17,6 +17,7 @@
     "@mantine/hooks": "^7.15.1",
     "atomic-router": "^0.10.1",
     "atomic-router-react": "^0.10.0",
+    "clsx": "^2.1.1",
     "effect": "^3.14.8",
     "effector": "^23.2.3",
     "effector-react": "^23.3.0",
@@ -52,5 +53,5 @@
     "vite": "^6.0.3",
     "zod": "^3.24.1"
   },
-  "packageManager": "pnpm@10.17.0" 
+  "packageManager": "pnpm@10.17.0"
 }
