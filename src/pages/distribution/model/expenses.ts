@@ -1,5 +1,6 @@
-import { Array as A, flow, pipe } from 'effect';
-import { createEvent, createStore, sample } from 'effector';
+import { Array as A, flow } from 'effect';
+import { createStore } from 'effector';
+import { createAction } from 'effector-action';
 import { persist } from 'effector-storage/local';
 import { nanoid } from 'nanoid';
 import { readonly } from 'patronum';
@@ -9,14 +10,6 @@ import { Expense, ValidatedExpenseDraft } from '../lib';
 type RemovingExpense = Pick<Expense, 'id' | 'name'>;
 
 export const createExpensesModel = () => {
-    const push = createEvent<ValidatedExpenseDraft>();
-    const removeStarted = createEvent<RemovingExpense>();
-    const removeConfirmed = createEvent();
-    const removeEndedTransitionStarted = createEvent();
-    const removeEnded = createEvent();
-    const remove = createEvent<Expense['id']>();
-    const update = createEvent<Expense>();
-
     const $expenses = createStore<readonly Expense[]>([]);
     const $removingExpense = createStore<RemovingExpense | null>(null);
 
@@ -30,67 +23,68 @@ export const createExpensesModel = () => {
         ),
     );
 
-    sample({
-        clock: push,
-        source: $expenses,
-        fn: (expenses, draft) => pipe(expenses, A.append({ ...draft, id: nanoid() })),
+    const replaceAll = createAction({
         target: $expenses,
+        fn: (target, expenses: readonly Expense[]) => target(expenses),
     });
 
-    sample({
-        clock: removeStarted,
+    const push = createAction({
+        target: $expenses,
+        fn: (target, draft: ValidatedExpenseDraft) => target(A.append({ ...draft, id: nanoid() })),
+    });
+
+    const remove = createAction({
+        target: $expenses,
+        fn: (target, id: Expense['id']) => target(A.filter((expense) => expense.id !== id)),
+    });
+
+    const removeStarted = createAction({
+        target: {
+            $removingExpense,
+            $isRemoveInProgress,
+        },
+        fn: (target, removingExpense: RemovingExpense) => {
+            target.$removingExpense(removingExpense);
+            target.$isRemoveInProgress(true);
+        },
+    });
+
+    const removeEndedTransitionStarted = createAction({
+        target: $isRemoveInProgress,
+        fn: (target) => target(false),
+    });
+
+    const removeEnded = createAction({
         target: $removingExpense,
+        fn: (target) => target.reinit(),
     });
 
-    sample({
-        clock: removeStarted,
-        fn: () => true,
-        target: $isRemoveInProgress,
-    });
-
-    sample({
-        clock: removeEndedTransitionStarted,
-        fn: () => false,
-        target: $isRemoveInProgress,
-    });
-
-    sample({
-        clock: removeEnded,
-        target: $removingExpense.reinit,
-    });
-
-    sample({
-        clock: removeConfirmed,
+    const removeConfirmed = createAction({
         source: $removingExpenseId,
-        filter: Boolean,
-        target: [remove, removeEndedTransitionStarted],
+        target: {
+            remove,
+            removeEndedTransitionStarted,
+        },
+        fn: (target, removingExpenseId) => {
+            if (removingExpenseId === null) return;
+
+            target.remove(removingExpenseId);
+            target.removeEndedTransitionStarted();
+        },
     });
 
-    sample({
-        clock: remove,
-        source: $expenses,
-        fn: (expenses, id) =>
-            pipe(
-                expenses,
-                A.filter((expense) => expense.id !== id),
-            ),
+    const update = createAction({
         target: $expenses,
+        fn: (target, updatedExpense: Expense) => target(A.map((expense) => (expense.id === updatedExpense.id ? updatedExpense : expense))),
     });
 
-    sample({
-        clock: update,
-        source: $expenses,
-        fn: (expenses, updatedExpense) =>
-            pipe(
-                expenses,
-                A.map((expense) => (expense.id === updatedExpense.id ? updatedExpense : expense)),
-            ),
-        target: $expenses,
+    persist({
+        key: 'expenses',
+        store: $expenses,
     });
-
-    persist({ store: $expenses, key: 'expenses' });
 
     return {
+        replaceAll,
         push,
         removeStarted,
         removeConfirmed,

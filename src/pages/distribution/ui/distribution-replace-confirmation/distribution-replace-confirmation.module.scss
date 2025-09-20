@@ -1,0 +1,29 @@
+.body {
+    container-type: inline-size;
+}
+
+.expenses {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.expensePercent {
+    justify-self: end;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+
+    @container (width >= 408px) {
+        flex-direction: row;
+    }
+}
+
+.button {
+    @container (width >= 408px) {
+        flex: 1;
+    }
+}

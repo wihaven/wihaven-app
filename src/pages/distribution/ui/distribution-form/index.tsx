@@ -9,6 +9,7 @@ import { ExpenseForm } from '../expense-form';
 import { ExpensesList } from '../expenses-list';
 import { IncomeInput } from '../income-input';
 import { RemoveConfirmation } from '../remove-confirmation';
+import { Share } from '../share';
 import styles from './distribution-form.module.scss';
 
 const expensesFieldsetLegend = 'Статьи расходов';
@@ -38,8 +39,11 @@ export const DistributionForm = () => {
     const distributionIsCompleted = notDistributedPercent === 0;
 
     return (
-        <Stack>
-            <IncomeInput />
+        <Stack className={styles.root}>
+            <header className={styles.header}>
+                <IncomeInput className={styles.incomeInput} />
+                <Share />
+            </header>
             <Fieldset
                 component={Stack}
                 legend={

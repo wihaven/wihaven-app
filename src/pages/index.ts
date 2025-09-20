@@ -1,8 +1,8 @@
 import { createRoutesView } from 'atomic-router-react';
 
-import { DistributionRouteView } from './distribution';
+import { DistributionRouteView, SharedDistributionRouteView } from './distribution';
 import { HomeRouteView } from './home';
 
 export const Routes = createRoutesView({
-    routes: [HomeRouteView, DistributionRouteView],
+    routes: [HomeRouteView, SharedDistributionRouteView, DistributionRouteView],
 });

@@ -1,5 +1,4 @@
 import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core';
-import '@mantine/core/styles.css';
 
 import { RouterProvider } from 'atomic-router-react';
 

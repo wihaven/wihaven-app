@@ -1,4 +1,4 @@
-import { Option as O, flow } from 'effect';
+import { Option as O, flow, pipe } from 'effect';
 import { z } from 'zod';
 
 export type ExpenseDraft = {
@@ -13,9 +13,12 @@ export const ExpenseDraftContract = z.object({
 
 export type ValidatedExpenseDraft = z.infer<typeof ExpenseDraftContract>;
 
-export type Expense = ValidatedExpenseDraft & {
-    id: string;
-};
+export const ExpenseContract = ExpenseDraftContract.extend({
+    id: z.string(),
+});
+export type Expense = z.infer<typeof ExpenseContract>;
+
+export const ExpensesContract = z.array(ExpenseContract);
 
 export type CalculatedExpense = Expense & {
     sum?: number;
@@ -25,3 +28,13 @@ export const foldNumberInputValueToNumber: (value: '' | number) => number = flow
     O.liftPredicate((value): value is number => value !== ''),
     O.getOrElse(() => 0),
 );
+
+export const serializeExpenses = (expenses: readonly Expense[]): string => pipe(expenses, JSON.stringify, btoa);
+
+export const deserializeExpenses = (raw: string): readonly Expense[] => {
+    try {
+        return pipe(raw, atob, JSON.parse, ExpensesContract.parse);
+    } catch {
+        return [];
+    }
+};

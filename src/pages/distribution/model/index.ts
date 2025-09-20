@@ -5,9 +5,10 @@ import * as O from 'effect/Option';
 import { combine, sample } from 'effector';
 
 import { createDisclosure } from '~/shared/lib/factories';
-import { distributionRoute } from '~/shared/routing';
+import { distributionRoute, sharedDistributionRoute } from '~/shared/routing';
 
 import { CalculatedExpense, foldNumberInputValueToNumber } from '../lib';
+import { createDistributionReplaceConfirmationModel } from './distribution-replace-confirmation';
 import { createExpenseEditModel } from './edit-expense';
 import { createExpenseForm } from './expense-form';
 import { createExpensesModel } from './expenses';
@@ -25,6 +26,7 @@ const createDistributionModel = () => {
         removeConfirmed,
         removeEndedTransitionStarted,
         removeEnded,
+        replaceAll,
         update,
     } = createExpensesModel();
     const expenseCreationForm = createExpenseForm({ $notDistributedPercent });
@@ -78,6 +80,24 @@ const createDistributionModel = () => {
         target: expenseCreation.deactivate,
     });
 
+    const distributionReplaceConfirmation = createDistributionReplaceConfirmationModel();
+    sample({
+        clock: sharedDistributionRoute.opened,
+        fn: (params) => params.params.distribution,
+        target: distributionReplaceConfirmation.open,
+    });
+
+    // NOTE: parse distribution from url if exists -> open distribution page with parsed value and clear distribution from url
+    sample({
+        clock: distributionReplaceConfirmation.confirmed,
+        target: [replaceAll, distributionRoute.open],
+    });
+
+    sample({
+        clock: distributionReplaceConfirmation.denied,
+        target: distributionRoute.open,
+    });
+
     return {
         incomeDraftSubmitted: incomeForm.submit,
         incomeField: incomeForm.fields.income,
@@ -98,8 +118,9 @@ const createDistributionModel = () => {
         expenseEditForm,
 
         $notDistributedPercent: $notDistributed,
+
+        distributionReplaceConfirmation,
     };
 };
 
 export const distributionModel = createDistributionModel();
-export const route = distributionRoute;
