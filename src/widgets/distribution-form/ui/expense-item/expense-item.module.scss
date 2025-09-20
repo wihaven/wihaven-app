@@ -1,6 +1,6 @@
 .root {
     display: grid;
-    grid-template: 'title . edit' 'percent sum delete' / 1fr 1fr auto;
+    grid-template: 'title title edit' 'percent sum delete' / 1fr 1fr auto;
     padding: 8px;
     gap: 16px;
     border-radius: 8px;
