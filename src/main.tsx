@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import '@mantine/core/styles.layer.css';
 
 import { appStarted } from '~/shared/init';
+import '~/shared/ui/styles/global.scss';
 
 import App from './App.tsx';
 
