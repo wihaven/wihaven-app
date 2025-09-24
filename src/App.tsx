@@ -1,8 +1,10 @@
 import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core';
+import '@mantine/core/styles.layer.css';
 
 import { RouterProvider } from 'atomic-router-react';
 
 import { router } from '~/shared/routing';
+import '~/shared/ui/styles/global.scss';
 
 import { Routes } from './pages';
 

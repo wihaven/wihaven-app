@@ -1,4 +1,4 @@
-import { AppShell, Container, Group, Text, Title } from '@mantine/core';
+import { AppShell, Group, Text, Title } from '@mantine/core';
 
 import styles from './app-layout.module.scss';
 
@@ -20,7 +20,7 @@ export const AppLayout = (props: AppLayoutProps) => {
                     {title}
                 </Title>
             </AppShell.Header>
-            <AppShell.Main component={Container}>{children}</AppShell.Main>
+            <AppShell.Main className={styles.container}>{children}</AppShell.Main>
         </AppShell>
     );
 };
