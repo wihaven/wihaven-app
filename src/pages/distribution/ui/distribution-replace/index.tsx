@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react';
 
-import { ActionIcon, Button, Modal, Textarea } from '@mantine/core';
+import { ActionIcon, Button, Modal, Textarea, Tooltip } from '@mantine/core';
 
 import { IconClipboard } from '@tabler/icons-react';
 import { useUnit } from 'effector-react';
@@ -10,6 +10,7 @@ import { Form } from '~/shared/ui/form';
 import { distributionModel } from '../../model';
 import styles from './distribution-replace.module.scss';
 
+const tooltipLabel = 'Использовать код распределения';
 const title = 'Вставьте код распределения ниже';
 const textAreaPlaceholder = 'Код распределения...';
 const submitButtonLabel = 'Применить';
@@ -32,9 +33,11 @@ export const DistributionReplace = () => {
 
     return (
         <>
-            <ActionIcon size="lg" color="gray" onClick={open}>
-                <IconClipboard />
-            </ActionIcon>
+            <Tooltip label={tooltipLabel}>
+                <ActionIcon size="lg" color="gray" onClick={open}>
+                    <IconClipboard />
+                </ActionIcon>
+            </Tooltip>
             <Modal title={title} opened={opened} onClose={close}>
                 <Form onSubmit={distributionCodeSubmitted} className={styles.form}>
                     <Textarea placeholder={textAreaPlaceholder} rows={5} value={distributionCode} onChange={onChange} />

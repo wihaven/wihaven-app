@@ -4,3 +4,9 @@
     padding: 8px;
     padding-inline: 16px;
 }
+
+.container {
+    margin-inline: auto;
+    max-width: 60em;
+    padding-inline: var(--mantine-spacing-md);
+}

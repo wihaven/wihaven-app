@@ -12,6 +12,9 @@ export default defineConfig({
                 additionalData: `@use "${path.join(process.cwd(), 'src/shared/ui/styles/_mantine.scss').replace(/\\/g, '/')}" as mantine;`,
             },
         },
+        modules: {
+            generateScopedName: '[name]__[local]___[hash:base64:5]',
+        },
     },
     resolve: {
         alias: {

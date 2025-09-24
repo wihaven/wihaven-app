@@ -1,4 +1,4 @@
-import { ActionIcon, Affix, Notification, Transition } from '@mantine/core';
+import { ActionIcon, Affix, Notification, Tooltip, Transition } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 
 import { IconShare } from '@tabler/icons-react';
@@ -10,6 +10,8 @@ import { distributionModel } from '../../model';
 const successNotificationTitle = 'Отлично!';
 const successNotificationMessage = 'Код распределения скопирован';
 
+const tooltipLabel = 'Поделиться кодом распределения';
+
 export const Share = () => {
     const clipboard = useClipboard({ timeout: 1000 });
     const expenses = useUnit(distributionModel.$expenses);
@@ -20,9 +22,11 @@ export const Share = () => {
 
     return (
         <>
-            <ActionIcon onClick={onShare} size="lg">
-                <IconShare />
-            </ActionIcon>
+            <Tooltip label={tooltipLabel}>
+                <ActionIcon onClick={onShare} size="lg">
+                    <IconShare />
+                </ActionIcon>
+            </Tooltip>
             <Affix position={{ bottom: 20, right: 20 }}>
                 <Transition transition="slide-up" duration={200} mounted={clipboard.copied}>
                     {(transitionStyles) => (
