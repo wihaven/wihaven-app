@@ -27,13 +27,13 @@ export const createExpenseForm = ({ $notDistributedPercent }: CreateExpenseFormP
                         onSome: () => null,
                     }),
                 );
-            } catch (e) {
+            } catch (error) {
                 return pipe(
-                    e,
+                    error,
                     O.liftPredicate((e) => e instanceof ZodError),
-                    O.map(({ errors }) =>
+                    O.map((error) =>
                         pipe(
-                            errors,
+                            error.issues,
                             A.reduce({}, (acc: ErrorsSchemaPayload, error) => {
                                 if (acc[error.path.join('.')]) {
                                     return acc;
