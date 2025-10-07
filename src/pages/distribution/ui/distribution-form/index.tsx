@@ -12,7 +12,6 @@ import { IncomeInput } from '../income-input';
 import { RemoveConfirmation } from '../remove-confirmation';
 import { Share } from '../share';
 import styles from './distribution-form.module.scss';
-import { DistributionToolbar } from './distribution-toolbar';
 
 const expensesTitle = 'Статьи расходов';
 const notDistributedPercentLabel = 'Нераспределено:\xa0';
@@ -59,7 +58,9 @@ export const DistributionForm = () => {
                     >
                         {distributionLabel}
                     </Text>
-                    <DistributionToolbar className={styles.distributionToolbar} />
+                    {
+                        // TODO: <DistributionToolbar className={styles.distributionToolbar} />
+                    }
                 </header>
                 <ExpensesList />
                 {expenseCreationActive ? (

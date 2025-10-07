@@ -1,11 +1,12 @@
+import { PropsWithChildren } from 'react';
+
 import { AppShell, Group, Text, Title } from '@mantine/core';
 
 import styles from './app-layout.module.scss';
 
-export type AppLayoutProps = {
+export type AppLayoutProps = PropsWithChildren<{
     title: string;
-    children: React.ReactNode;
-};
+}>;
 
 export const AppLayout = (props: AppLayoutProps) => {
     const { title, children } = props;
