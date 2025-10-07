@@ -1,4 +1,4 @@
-import { Button, Fieldset, Stack, Text } from '@mantine/core';
+import { Button, Stack, Text } from '@mantine/core';
 
 import { IconPlus } from '@tabler/icons-react';
 import clsx from 'clsx';
@@ -12,8 +12,9 @@ import { IncomeInput } from '../income-input';
 import { RemoveConfirmation } from '../remove-confirmation';
 import { Share } from '../share';
 import styles from './distribution-form.module.scss';
+import { DistributionToolbar } from './distribution-toolbar';
 
-const expensesFieldsetLegend = 'Статьи расходов';
+const expensesTitle = 'Статьи расходов';
 const notDistributedPercentLabel = 'Нераспределено:\xa0';
 const allPercentsDistributedLabel = 'Все проценты распределены';
 const percentsDistributionOverflowed = 'Вы пытаетесь распределить лишние\xa0';
@@ -29,7 +30,7 @@ const addMoreButtonLabel = 'Добавить';
 
 export const DistributionForm = () => {
     const { expenseCreationActive, notDistributedPercent, expenseCreationToggled } = useUnit({
-        expenseCreationActive: distributionModel.expenseCreation.$active,
+        expenseCreationActive: distributionModel.expenseCreation.$isOpen,
         notDistributedPercent: distributionModel.$notDistributedPercent,
 
         expenseCreationToggled: distributionModel.expenseCreation.toggle,
@@ -40,24 +41,26 @@ export const DistributionForm = () => {
     const distributionIsCompleted = notDistributedPercent === 0;
 
     return (
-        <Stack className={styles.root}>
+        <Stack component="section" className={styles.root}>
             <header className={styles.header}>
                 <IncomeInput className={styles.incomeInput} />
                 <DistributionReplace />
                 <Share />
             </header>
-            <Fieldset
-                component={Stack}
-                legend={
-                    <>
-                        {expensesFieldsetLegend}
-                        <Text className={clsx(distributionHasOverflow && styles.overflow, distributionIsCompleted && styles.completed)}>
-                            {distributionLabel}
-                        </Text>
-                    </>
-                }
-                classNames={{ legend: styles.legend }}
-            >
+            <Stack component="section" className={styles.distribution}>
+                <header className={styles.distributionHeader}>
+                    <span className={styles.expensesTitle}>{expensesTitle}</span>
+                    <Text
+                        className={clsx(
+                            styles.distributionStatus,
+                            distributionHasOverflow && styles.overflow,
+                            distributionIsCompleted && styles.completed,
+                        )}
+                    >
+                        {distributionLabel}
+                    </Text>
+                    <DistributionToolbar className={styles.distributionToolbar} />
+                </header>
                 <ExpensesList />
                 {expenseCreationActive ? (
                     <ExpenseForm form={distributionModel.expenseCreationForm} />
@@ -66,7 +69,7 @@ export const DistributionForm = () => {
                         {addMoreButtonLabel}
                     </Button>
                 )}
-            </Fieldset>
+            </Stack>
             <RemoveConfirmation />
         </Stack>
     );

@@ -7,7 +7,7 @@ import { createDisclosure } from '~/shared/lib/factories';
 import { Expense, deserializeExpenses } from '../lib';
 
 export const createDistributionReplaceConfirmationModel = () => {
-    const { activate, deactivate, $active } = createDisclosure(false);
+    const disclosure = createDisclosure(false);
     const confirmed = createEvent<readonly Expense[]>();
     const denied = createEvent();
 
@@ -15,24 +15,24 @@ export const createDistributionReplaceConfirmationModel = () => {
 
     const confirm = createAction({
         source: $expensesCandidate,
-        target: { confirmed, deactivate },
+        target: { confirmed, close: disclosure.close },
         fn: (target, expenses) => {
             target.confirmed(expenses);
-            target.deactivate();
+            target.close();
         },
     });
 
     const deny = createAction({
-        target: { deactivate, denied },
+        target: { close: disclosure.close, denied },
         fn: (target) => {
-            target.deactivate();
+            target.close();
             target.denied();
         },
     });
 
     const open = createAction({
         target: {
-            activate,
+            open: disclosure.open,
             $expensesCandidate,
             deny,
         },
@@ -44,13 +44,13 @@ export const createDistributionReplaceConfirmationModel = () => {
                 return;
             }
 
-            target.activate();
+            target.open();
             target.$expensesCandidate(expenses);
         },
     });
 
     return {
-        $opened: readonly($active),
+        $opened: disclosure.$isOpen,
         open,
         confirm,
         deny,
