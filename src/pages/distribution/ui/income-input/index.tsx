@@ -1,6 +1,6 @@
 import { NumberInput } from '@mantine/core';
 
-import { useField } from '@effector-reform/react';
+import { useField } from '~/shared/lib/factories/form';
 
 import { distributionModel } from '../../model';
 

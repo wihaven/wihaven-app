@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import process from 'node:process';
@@ -20,6 +21,12 @@ export default defineConfig({
     resolve: {
         alias: {
             '~': '/src',
+        },
+    },
+    test: {
+        typecheck: {
+            enabled: true,
+            tsconfig: './tsconfig.app.json',
         },
     },
 });

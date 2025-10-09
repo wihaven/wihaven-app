@@ -1,5 +1,3 @@
-import { createArrayField, createForm } from '@effector-reform/core';
-import { zodAdapter } from '@effector-reform/zod';
 import { Record } from 'effect';
 import { Event, createStore } from 'effector';
 import { createAction } from 'effector-action';
@@ -9,6 +7,7 @@ import { readonly } from 'patronum';
 import z from 'zod';
 
 import { createDisclosure } from '~/shared/lib/factories';
+import { createForm } from '~/shared/lib/factories/form';
 
 import { Expense, ExpenseContract } from '../lib';
 
@@ -21,22 +20,14 @@ export const createDistributionPersistConfirmation = () => {
     const disclosure = createDisclosure(false);
 
     const form = createForm({
-        schema: {
-            name: '',
-            expenses: createArrayField<Distribution['expenses'][number]>([]),
-        },
-        validation: zodAdapter(
-            z.object({
-                name: z.string().nonempty(),
-                expenses: z.array(ExpenseContract).nonempty(),
-            }),
-        ),
+        name: { initialValue: '', validation: z.string().nonempty() },
+        expenses: { initialValue: [] as Expense[], validation: z.array(ExpenseContract).nonempty() },
     });
 
     const open = createAction({
         target: {
             open: disclosure.open,
-            expenses: form.fields.expenses.change,
+            expenses: form.fields.expenses.onChange,
         },
         fn: (target, expenses: Expense[]) => {
             target.open();

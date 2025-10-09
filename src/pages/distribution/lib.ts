@@ -8,9 +8,12 @@ export type ExpenseDraft = {
     percent: number | '';
 };
 
+export const ExpenseDraftNameContract = z.string().nonempty('Название не может быть пустым');
+export const ExpenseDraftPercentContract = z.number({ message: 'Процент не может быть пустым' });
+
 export const ExpenseDraftContract = z.object({
-    name: z.string().nonempty('Название не может быть пустым'),
-    percent: z.number({ message: 'Процент не может быть пустым' }),
+    name: ExpenseDraftNameContract,
+    percent: ExpenseDraftPercentContract,
 });
 
 export type ValidatedExpenseDraft = z.infer<typeof ExpenseDraftContract>;
