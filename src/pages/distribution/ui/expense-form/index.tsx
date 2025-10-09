@@ -2,10 +2,10 @@ import { ChangeEventHandler } from 'react';
 
 import { ActionIcon, NumberInput, Paper, TextInput, Tooltip } from '@mantine/core';
 
-import { useField } from '@effector-reform/react';
 import { IconDeviceFloppy, IconX } from '@tabler/icons-react';
 import { useUnit } from 'effector-react';
 
+import { useField } from '~/shared/lib/factories/form';
 import { Form } from '~/shared/ui/form';
 
 import { ExpenseFormViewModel } from '../../model/expense-form';

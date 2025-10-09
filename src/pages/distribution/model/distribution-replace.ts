@@ -6,17 +6,7 @@ import { createDisclosure } from '~/shared/lib/factories';
 import { sharedDistributionRoute } from '~/shared/routing';
 
 export const createDistributionReplaceModel = () => {
-    const { activate, deactivate, $active } = createDisclosure(false);
-
-    const open = createAction({
-        target: { activate },
-        fn: (target) => target.activate(),
-    });
-
-    const close = createAction({
-        target: { deactivate },
-        fn: (target) => target.deactivate(),
-    });
+    const disclosure = createDisclosure(false);
 
     const $distributionCode = createStore<string>('');
 
@@ -28,21 +18,21 @@ export const createDistributionReplaceModel = () => {
     const distributionCodeSubmitted = createAction({
         source: $distributionCode,
         target: {
-            deactivate,
+            close: disclosure.close,
             $distributionCode,
             navigate: sharedDistributionRoute.open,
         },
         fn: (target, distribution) => {
-            target.deactivate();
+            target.close();
             target.$distributionCode.reinit();
             target.navigate({ distribution });
         },
     });
 
     return {
-        $opened: readonly($active),
-        open,
-        close,
+        $opened: readonly(disclosure.$isOpen),
+        open: disclosure.open,
+        close: disclosure.close,
 
         $distributionCode,
         distributionCodeChanged,

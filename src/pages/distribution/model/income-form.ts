@@ -1,6 +1,6 @@
-import { createForm } from '@effector-reform/core';
-import { zodAdapter } from '@effector-reform/zod';
 import { z } from 'zod';
+
+import { createForm } from '~/shared/lib/factories/form';
 
 export type IncomeDraft = {
     income: number | '';
@@ -13,10 +13,7 @@ export const IncomeContract = z.object({
 export type ValidatedIncomeDraft = z.infer<typeof IncomeContract>;
 
 export const createIncomeForm = () => {
-    return createForm<IncomeDraft>({
-        schema: {
-            income: '',
-        },
-        validation: zodAdapter(IncomeContract),
+    return createForm({
+        income: { initialValue: '' as number | '', validation: IncomeContract },
     });
 };

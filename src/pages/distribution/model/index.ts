@@ -78,7 +78,7 @@ const createDistributionModel = () => {
 
     sample({
         clock: expenseCreationForm.reset,
-        target: expenseCreation.deactivate,
+        target: expenseCreation.close,
     });
 
     const distributionReplace = createDistributionReplaceModel();

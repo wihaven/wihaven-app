@@ -1,71 +1,35 @@
-import { ErrorsSchemaPayload, FormValues, UserFormSchema, createForm } from '@effector-reform/core';
-import { pipe } from 'effect';
-import * as A from 'effect/Array';
-import * as O from 'effect/Option';
-import { Store, attach } from 'effector';
-import { ZodError } from 'zod';
+import { Store } from 'effector';
 
-import { ExpenseDraft, ExpenseDraftContract, ValidatedExpenseDraft } from '../lib';
+import { createForm } from '~/shared/lib/factories/form';
+
+import { ExpenseDraftNameContract, ExpenseDraftPercentContract } from '../lib';
 
 export type CreateExpenseFormParams = {
     $notDistributedPercent: Store<number>;
 };
 
 export const createExpenseForm = ({ $notDistributedPercent }: CreateExpenseFormParams) => {
-    const validateExpenseFx = attach({
-        source: $notDistributedPercent,
-        effect: async (notDistributedPercent, draft: FormValues<UserFormSchema<ExpenseDraft>>): Promise<ErrorsSchemaPayload | null> => {
-            try {
-                const result = await ExpenseDraftContract.parseAsync(draft);
-
-                return pipe(
-                    notDistributedPercent,
-                    (percent) => percent - result.percent,
-                    O.liftPredicate((percent) => percent >= 0),
-                    O.match({
-                        onNone: () => ({ percent: 'Сумма всех процентов не может превышать 100%' }),
-                        onSome: () => null,
-                    }),
-                );
-            } catch (e) {
-                return pipe(
-                    e,
-                    O.liftPredicate((e) => e instanceof ZodError),
-                    O.map(({ errors }) =>
-                        pipe(
-                            errors,
-                            A.reduce({}, (acc: ErrorsSchemaPayload, error) => {
-                                if (acc[error.path.join('.')]) {
-                                    return acc;
-                                }
-
-                                acc[error.path.join('.')] = error.message;
-
-                                return acc;
-                            }),
-                        ),
-                    ),
-                    O.getOrNull,
-                );
-            }
+    const expenseForm = createForm({
+        name: {
+            initialValue: '',
+            validation: ExpenseDraftNameContract,
         },
-    });
-
-    const expenseForm = createForm<ExpenseDraft>({
-        schema: {
-            name: '',
-            percent: '',
+        percent: {
+            initialValue: '' as number | '',
+            validation: $notDistributedPercent.map((notDistributedPercent) =>
+                ExpenseDraftPercentContract.refine((percent) => notDistributedPercent - percent >= 0, {
+                    error: 'Сумма всех процентов не может превышать 100%',
+                }),
+            ),
         },
-        validation: validateExpenseFx,
-        validationStrategies: ['submit'],
     });
 
     return {
         name: expenseForm.fields.name,
         percent: expenseForm.fields.percent,
         submit: expenseForm.submit,
-        reset: expenseForm.reset,
-        validatedAndSubmitted: expenseForm.validatedAndSubmitted.map((draft) => draft as ValidatedExpenseDraft),
+        reset: expenseForm.reinit,
+        validatedAndSubmitted: expenseForm.validatedAndSubmitted,
     };
 };
 

@@ -40,8 +40,8 @@ export const createExpenseEditModel = ({ $notDistributedPercent }: CreateExpense
         target: [
             $currentEditedExpense,
             spread({
-                name: form.name.change,
-                percent: form.percent.change,
+                name: form.name.onChange,
+                percent: form.percent.onChange,
             }),
         ],
     });
