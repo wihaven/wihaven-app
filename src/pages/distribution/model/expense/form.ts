@@ -2,14 +2,14 @@ import { Store } from 'effector';
 
 import { createForm } from '~/shared/lib/factories/form';
 
-import { ExpenseDraftNameContract, ExpenseDraftPercentContract } from '../lib';
+import { ExpenseDraftNameContract, ExpenseDraftPercentContract } from '../../lib';
 
 export type CreateExpenseFormParams = {
     $notDistributedPercent: Store<number>;
 };
 
 export const createExpenseForm = ({ $notDistributedPercent }: CreateExpenseFormParams) => {
-    const expenseForm = createForm({
+    return createForm({
         name: {
             initialValue: '',
             validation: ExpenseDraftNameContract,
@@ -23,14 +23,6 @@ export const createExpenseForm = ({ $notDistributedPercent }: CreateExpenseFormP
             ),
         },
     });
-
-    return {
-        name: expenseForm.fields.name,
-        percent: expenseForm.fields.percent,
-        submit: expenseForm.submit,
-        reset: expenseForm.reinit,
-        validatedAndSubmitted: expenseForm.validatedAndSubmitted,
-    };
 };
 
 export type ExpenseFormModel = ReturnType<typeof createExpenseForm>;

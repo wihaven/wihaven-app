@@ -4,7 +4,7 @@ import { Button, Modal, Text } from '@mantine/core';
 
 import { useUnit } from 'effector-react';
 
-import { distributionModel } from '../../model';
+import { distributionModel } from '../../model/distribution';
 import styles from './distribution-replace-confirmation.module.scss';
 
 const title = 'Использовать новое распределение?';

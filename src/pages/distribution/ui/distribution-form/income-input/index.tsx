@@ -2,7 +2,7 @@ import { NumberInput } from '@mantine/core';
 
 import { useField } from '~/shared/lib/factories/form';
 
-import { distributionModel } from '../../model';
+import { distributionModel } from '../../../model/distribution';
 
 const incomeInputLabel = 'Сумма прихода';
 
@@ -11,7 +11,7 @@ export type IncomeInputProps = {
 };
 
 export const IncomeInput = ({ className }: IncomeInputProps) => {
-    const incomeField = useField(distributionModel.incomeField);
+    const incomeField = useField(distributionModel.income.fields.income);
 
     const onSumInputChanged = ({ floatValue }: { floatValue: number | undefined }) => {
         if (floatValue === undefined) {

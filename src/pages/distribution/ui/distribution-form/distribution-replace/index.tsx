@@ -7,7 +7,7 @@ import { useUnit } from 'effector-react';
 
 import { Form } from '~/shared/ui/form';
 
-import { distributionModel } from '../../model';
+import { distributionModel } from '../../../model/distribution';
 import styles from './distribution-replace.module.scss';
 
 const tooltipLabel = 'Использовать код распределения';
@@ -15,16 +15,16 @@ const title = 'Вставьте код распределения ниже';
 const textAreaPlaceholder = 'Код распределения...';
 const submitButtonLabel = 'Применить';
 
-const model = distributionModel.distributionReplace;
+const { form, modal } = distributionModel.distributionReplace;
 
 export const DistributionReplace = () => {
     const { opened, close, open, distributionCode, distributionCodeChanged, distributionCodeSubmitted } = useUnit({
-        opened: model.$opened,
-        open: model.open,
-        close: model.close,
-        distributionCode: model.$distributionCode,
-        distributionCodeChanged: model.distributionCodeChanged,
-        distributionCodeSubmitted: model.distributionCodeSubmitted,
+        opened: modal.$isOpen,
+        open: modal.open,
+        close: modal.close,
+        distributionCode: form.fields.distribution.$value,
+        distributionCodeChanged: form.fields.distribution.onChange,
+        distributionCodeSubmitted: form.submit,
     });
 
     const onChange = (event: ChangeEvent<HTMLTextAreaElement>) => {

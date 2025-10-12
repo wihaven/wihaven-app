@@ -5,8 +5,8 @@ import { useUnit } from 'effector-react';
 
 import { formatAsRubles } from '~/shared/lib/currency';
 
-import { CalculatedExpense } from '../../lib';
-import { distributionModel } from '../../model';
+import { CalculatedExpense } from '../../../lib';
+import { distributionModel } from '../../../model/distribution';
 import styles from './expense-item.module.scss';
 
 const editButtonLabel = 'Изменить статью расходов';
@@ -18,8 +18,8 @@ interface ExpenseItemProps {
 
 export const ExpenseItem = ({ expense }: ExpenseItemProps) => {
     const { onExpenseRemove, onExpenseEdit } = useUnit({
-        onExpenseRemove: distributionModel.expenseRemoveStarted,
-        onExpenseEdit: distributionModel.expenseEditStarted,
+        onExpenseRemove: distributionModel.expenses.remove.started,
+        onExpenseEdit: distributionModel.expenses.edit.started,
     });
 
     return (

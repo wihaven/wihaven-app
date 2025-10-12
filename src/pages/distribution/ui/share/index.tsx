@@ -5,7 +5,7 @@ import { IconShare } from '@tabler/icons-react';
 import { useUnit } from 'effector-react';
 
 import { serializeExpenses } from '../../lib';
-import { distributionModel } from '../../model';
+import { distributionModel } from '../../model/distribution';
 
 const successNotificationTitle = 'Отлично!';
 const successNotificationMessage = 'Код распределения скопирован';
@@ -14,7 +14,7 @@ const tooltipLabel = 'Поделиться кодом распределения
 
 export const Share = () => {
     const clipboard = useClipboard({ timeout: 1000 });
-    const expenses = useUnit(distributionModel.$expenses);
+    const expenses = useUnit(distributionModel.expenses.$items);
 
     const onShare = () => {
         clipboard.copy(serializeExpenses(expenses));

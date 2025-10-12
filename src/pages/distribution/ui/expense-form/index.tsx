@@ -8,7 +8,7 @@ import { useUnit } from 'effector-react';
 import { useField } from '~/shared/lib/factories/form';
 import { Form } from '~/shared/ui/form';
 
-import { ExpenseFormViewModel } from '../../model/expense-form';
+import { ExpenseFormViewModel } from '../../model/expense/form';
 import styles from './expense-form.module.scss';
 
 const nameInputLabel = 'Название';
@@ -21,11 +21,11 @@ export type ExpenseFormProps = {
 };
 
 export const ExpenseForm = ({ form }: ExpenseFormProps) => {
-    const expenseNameField = useField(form.name);
-    const expensePercentField = useField(form.percent);
+    const expenseNameField = useField(form.fields.name);
+    const expensePercentField = useField(form.fields.percent);
     const { onSubmit, onReset } = useUnit({
         onSubmit: form.submit,
-        onReset: form.reset,
+        onReset: form.reinit,
     });
 
     const onExpenseNameInputChanged: ChangeEventHandler<HTMLInputElement> = (event) => {
