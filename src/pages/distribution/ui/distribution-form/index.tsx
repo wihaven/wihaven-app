@@ -4,14 +4,13 @@ import { IconPlus } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { useUnit } from 'effector-react';
 
-import { distributionModel } from '../../model';
-import { DistributionReplace } from '../distribution-replace';
+import { distributionModel } from '../../model/distribution';
 import { ExpenseForm } from '../expense-form';
 import { ExpensesList } from '../expenses-list';
-import { IncomeInput } from '../income-input';
-import { RemoveConfirmation } from '../remove-confirmation';
 import { Share } from '../share';
 import styles from './distribution-form.module.scss';
+import { DistributionReplace } from './distribution-replace';
+import { IncomeInput } from './income-input';
 
 const expensesTitle = 'Статьи расходов';
 const notDistributedPercentLabel = 'Нераспределено:\xa0';
@@ -27,12 +26,13 @@ const foldNotDistributedPercentToLabel = (notDistributedPercent: number) => {
 
 const addMoreButtonLabel = 'Добавить';
 
+const expenses = distributionModel.expenses;
+
 export const DistributionForm = () => {
     const { expenseCreationActive, notDistributedPercent, expenseCreationToggled } = useUnit({
-        expenseCreationActive: distributionModel.expenseCreation.$isOpen,
-        notDistributedPercent: distributionModel.$notDistributedPercent,
-
-        expenseCreationToggled: distributionModel.expenseCreation.toggle,
+        expenseCreationActive: expenses.creation.modal.$isOpen,
+        expenseCreationToggled: expenses.creation.modal.toggle,
+        notDistributedPercent: expenses.$notDistributedPercent,
     });
 
     const distributionLabel = foldNotDistributedPercentToLabel(notDistributedPercent);
@@ -64,14 +64,13 @@ export const DistributionForm = () => {
                 </header>
                 <ExpensesList />
                 {expenseCreationActive ? (
-                    <ExpenseForm form={distributionModel.expenseCreationForm} />
+                    <ExpenseForm form={expenses.creation.form} />
                 ) : (
                     <Button leftSection={<IconPlus />} variant="transparent" onClick={expenseCreationToggled}>
                         {addMoreButtonLabel}
                     </Button>
                 )}
             </Stack>
-            <RemoveConfirmation />
         </Stack>
     );
 };

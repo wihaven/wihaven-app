@@ -9,7 +9,7 @@ import z from 'zod';
 import { createDisclosure } from '~/shared/lib/factories';
 import { createForm } from '~/shared/lib/factories/form';
 
-import { Expense, ExpenseContract } from '../lib';
+import { Expense, ExpenseContract } from '../../lib';
 
 export type Distribution = Readonly<{
     name: string;
