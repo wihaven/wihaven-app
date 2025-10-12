@@ -1,6 +1,5 @@
 import { createHistoryRouter, createRoute, createRouterControls } from 'atomic-router';
 
-export const homeRoute = createRoute();
 export const distributionRoute = createRoute();
 export const sharedDistributionRoute = createRoute<{ distribution: string }>();
 
