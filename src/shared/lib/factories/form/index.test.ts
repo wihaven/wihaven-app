@@ -106,3 +106,20 @@ test('If validation fails, form.$isValid must became false', async () => {
 
     expect(scope.getState(form.$isValid)).toBe(true);
 });
+
+test("If validation doesn't exists, form.validatedAndSubmitted must triggered with raw values", async () => {
+    const form = createForm({
+        name: {
+            initialValue: '',
+        },
+    });
+
+    const scope = fork();
+
+    const validatedAndSubmittedWatcher = eventWatcher({ event: form.validatedAndSubmitted, scope });
+
+    await allSettled(form.fields.name.onChange, { params: 'John', scope });
+    await allSettled(form.submit, { scope });
+
+    expect(validatedAndSubmittedWatcher.fn).toHaveBeenCalledExactlyOnceWith({ name: 'John' });
+});

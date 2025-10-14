@@ -3,7 +3,7 @@ import { Event, EventCallable, Store, StoreWritable, attach, combine, createEffe
 import { createAction } from 'effector-action';
 import { useUnit } from 'effector-react';
 import { combineEvents, readonly } from 'patronum';
-import { ZodError, ZodType } from 'zod';
+import z, { ZodError, ZodType } from 'zod';
 
 type Validation<Raw, Validated> = Store<ZodType<Validated, Raw>> | ZodType<Validated, Raw>;
 type ValidationOutput<V extends Validation<unknown, unknown> | undefined, In> = V extends Validation<unknown, infer Out> ? Out : In;
@@ -49,41 +49,32 @@ function createField<Raw, Validated = Raw>({ initialValue, validation }: FieldDe
     const validate = createEvent();
     const validated = createEvent<Validated>();
 
-    if (validation !== undefined) {
-        const $validation = is.store(validation) ? validation : readonly(createStore(validation));
+    const resolvedValidation = validation === undefined ? z.any() : validation;
+    const $validation = is.store(resolvedValidation) ? resolvedValidation : readonly(createStore(resolvedValidation));
 
-        const validateFx = createEffect<{ validation: ZodType<Validated, Raw>; value: Raw }, Validated, ZodError<Validated>>(async (params) => {
-            const result = await params.validation.safeParseAsync(params.value);
+    const validateFx = createEffect<{ validation: ZodType<Validated, Raw>; value: Raw }, Validated, ZodError<Validated>>(async (params) => {
+        const result = await params.validation.safeParseAsync(params.value);
 
-            if (result.success) {
-                return result.data;
-            }
+        if (result.success) {
+            return result.data;
+        }
 
-            throw result.error;
-        });
+        throw result.error;
+    });
 
-        sample({
-            clock: validate,
-            target: attach({
-                source: { validation: $validation, value: $value },
-                effect: validateFx,
-            }),
-        });
+    sample({
+        clock: validate,
+        target: attach({
+            source: { validation: $validation, value: $value },
+            effect: validateFx,
+        }),
+    });
 
-        sample({ clock: validateFx.doneData, target: validated });
-        createAction(validateFx.failData, {
-            target: $error,
-            fn: (target, error) => target(error.issues[0].message),
-        });
-    } else {
-        sample({
-            clock: validate,
-            source: $value,
-            fn: (value) => value as unknown as Validated,
-            target: validated,
-        });
-    }
-
+    sample({ clock: validateFx.doneData, target: validated });
+    createAction(validateFx.failData, {
+        target: $error,
+        fn: (target, error) => target(error.issues[0].message),
+    });
     return {
         $value: readonly($value),
         $error,
